@@ -22,7 +22,7 @@ us_companies = {
     "Chevron Corporation": "CVX",
     "Exxon Mobil Corporation": "XOM",
     "Pfizer Inc.": "PFE",
-    "Coca-Cola Company": "KO",
+    "Ccao-Cola Company": "KO",
     "PepsiCo Inc.": "PEP",
     "Walmart Inc.": "WMT",
     "Intel Corporation": "INTC",
@@ -56,7 +56,7 @@ us_companies = {
 }
 
 # action = "AAPL"  #PEP KO AMZN AAPL MSFT
-action = us_companies["Netflix Inc."]
+action = us_companies["Ccao-Cola Company"]
 
 def simulate_trading_lagged(price, initial_cash=2000):
     cash = initial_cash
