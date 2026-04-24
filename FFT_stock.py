@@ -1,5 +1,5 @@
 from stockdex import Ticker
-import numpy
+import numpy as np
 import matplotlib.pyplot as plt
 
 us_companies = {
@@ -11,7 +11,7 @@ us_companies = {
     "Meta Platforms Inc.": "META",
     "Tesla Inc.": "TSLA",
     "NVIDIA Corporation": "NVDA",
-    "Berkshire Hathaway Inc. (Class B)": "BRK.B",
+    "Berkshire Hathaway Inc. (Class B)": "BRK-B",
     "Johnson & Johnson": "JNJ",
     "JPMorgan Chase & Co.": "JPM",
     "Visa Inc.": "V",
@@ -56,46 +56,7 @@ us_companies = {
 }
 
 # action = "AAPL"  #PEP KO AMZN AAPL MSFT
-action = us_companies["Berkshire Hathaway Inc. (Class B)"]
-
-def simulate_trading_lagged(price, initial_cash=2000):
-    cash = initial_cash
-    shares = 0
-    portfolio_values = []
-
-    # On commence à i = 2 (il faut 2 jours d'historique)
-    for i in range(len(price)):
-        
-        # Pas assez d'info → rien faire
-        if i < 2:
-            total_value = cash + shares * price[i]
-            portfolio_values.append(total_value)
-            continue
-
-        today = price[i]
-        yesterday = price[i-1]
-        day_before = price[i-2]
-
-        # Signal basé sur (i-2 → i-1)
-        if yesterday > day_before:
-            # BUY ALL
-            if cash > 0:
-                shares = cash / today
-                cash = 0
-
-        elif yesterday < day_before:
-            # SELL ALL
-            if shares > 0:
-                cash = shares * today
-                shares = 0
-
-        # Valeur du portefeuille
-        total_value = cash + shares * today
-        portfolio_values.append(total_value)
-
-    return numpy.array(portfolio_values)
-
-
+action = us_companies["Costco Wholesale Corporation"]
 
 
 ticker = Ticker(ticker=action)
@@ -103,15 +64,25 @@ result = ticker.yahoo_api_price(range='5y', dataGranularity='1d')
 price = result["close"].to_numpy()
 
 
-portfolio_strat = simulate_trading_lagged(price)
 
-buy_hold = price / price[0] * 2000
+price_fft = np.fft.fftshift(np.fft.fft(price))
+freq = np.fft.fftshift(np.fft.fftfreq(len(price)))*len(price)
+magnitude = np.abs(price_fft)
+phase = np.angle(price_fft)
+
+idx = np.argsort(freq)
+
+
+
+
+plt.plot(price)
+plt.show()
+
+
 plt.figure()
-plt.plot(portfolio_strat, label="Strategy (lagged)", color="green")
-plt.plot(buy_hold, label="Buy & Hold", color="blue")
+plt.scatter(freq[:], magnitude[:], label="FFT", color="green")
 plt.title(action)
 plt.legend()
 
 
 plt.show()
-
