@@ -4,9 +4,9 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # Paramètres
 K = 100
-r = 0.05
+r = 0.1
 sigma = 0.20
-T = 1.0
+T = 1
 
 Smax = 3*K
 M = 300
@@ -112,3 +112,47 @@ ax.set_zlabel("Prix de l'option V(S,t) [$]")
 ax.set_title("Surface 3D de la solution Black-Scholes")
 
 plt.show()
+
+
+
+
+N = 800          # nombre de pas de temps
+n_paths = 500  # nombre de simulations Monte Carlo
+
+dt = T / N
+t = np.linspace(0, T, N+1)
+
+# Matrice des prix simulés
+S = np.zeros((n_paths, N+1))
+S[:, 0] = S0
+
+# Simulation Monte Carlo
+for i in range(N):
+    Z = np.random.normal(0, 1, n_paths)
+    S[:, i+1] = S[:, i] * np.exp(
+        (r - 0.5*sigma**2)*dt + sigma*np.sqrt(dt)*Z
+    )
+
+# Graphique de quelques trajectoires
+plt.figure()
+plt.plot(t, S[:50].T)
+plt.xlabel("Temps [années]")
+plt.ylabel("Prix de l'action S(t) [$]")
+plt.title("Simulation Monte Carlo d'une action")
+plt.grid(True)
+plt.show()
+
+# Prix final moyen
+print(f"Prix moyen final : {np.mean(S[:, -1]):.2f} $")
+print(f"Prix final théorique espéré : {S0*np.exp(r*T):.2f} $")
+
+W = []
+for i in S[:, -1]:
+    profit = max(i - K, 0)
+    W.append(np.exp(-r*T)*profit - prix)
+
+print(np.mean(W))
+
+
+
+
