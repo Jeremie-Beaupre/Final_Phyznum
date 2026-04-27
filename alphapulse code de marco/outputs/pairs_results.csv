@@ -1,0 +1,4 @@
+﻿Ticker_A,Ticker_B,Secteur,P_value,Correlation,Lag_optimal,Leader,Laggard
+CNR.TO,CP.TO,XLI,0.000157,0.5695,0,alpha_CNR.TO,alpha_CP.TO
+XOM,CVX,XLE,9.3e-05,0.4886,0,alpha_XOM,alpha_CVX
+PEP,KO,XLP,0.011166,0.4595,0,alpha_PEP,alpha_KO
